@@ -74,7 +74,6 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
-const workoutButton = document.querySelector('.workout__btn');
 
 class App {
   #map;
@@ -93,7 +92,6 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
-    workoutButton.addEventListener('click', this.editButton);
   }
 
   _getPosition() {
@@ -256,7 +254,6 @@ class App {
      <span class="workout__value">${workout.cadence}</span>
      <span class="workout__unit">spm</span>
    </div>
-   ${workoutButton}
  </li>
 `;
 
@@ -272,7 +269,6 @@ class App {
       <span class="workout__value">${workout.elevationGain}</span>
       <span class="workout__unit">m</span>
     </div>
-    ${workoutButton}
   </li> `;
 
     form.insertAdjacentHTML('afterend', html);
@@ -313,10 +309,6 @@ class App {
     this.#workouts.forEach(work => {
       this._renderWorkout(work);
     });
-  }
-
-  editButton(e) {
-    console.log(e);
   }
 
   reset() {

@@ -34,8 +34,21 @@
       <img src="logo.png" alt="Logo" class="logo" />
 
       <ul class="workouts">
-        <button class="form__btn">button</button>
+        <button class="delete-all__btn">DELETE ALL</button>
+        <!-- Edit workout form - TEST -->
+        <form class="editor hidden">
+          <div class="editor__row">
+            <label class="editor__label">Distance</label>
+            <input
+              class="editor__input editor__input--distance"
+              placeholder="km"
+            />
+          </div>
+          <!-- this btn reloads the page - need to prevent default in JS File -->
+          <button class="form__btn">button</button>
+        </form>
 
+        <!-- Create original workout form -->
         <form class="form hidden">
           <div class="form__row">
             <label class="form__label">Type</label>
@@ -69,6 +82,7 @@
               placeholder="meters"
             />
           </div>
+          <!-- This button stays hidden but this is what submits the workout -->
           <button class="form__btn">button</button>
         </form>
 

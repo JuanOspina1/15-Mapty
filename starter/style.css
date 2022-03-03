@@ -172,7 +172,11 @@ a:visited {
 }
 
 .form__btn {
-  /* display: none; */
+  display: none;
+}
+
+.editor.hidden {
+  display: none;
 }
 
 .copyright {

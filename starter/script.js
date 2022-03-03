@@ -74,7 +74,13 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
-const workoutButton = document.querySelector('.workout__btn');
+const deleteAllButton = document.querySelector('.delete-all__btn');
+const editorForm = document.querySelector('.editor');
+
+// Creating the edit button
+// const editButton = document.createElement('button');
+// editButton.classList.add('edit__btn');
+// editButton.textContent = 'EDIT';
 
 class App {
   #map;
@@ -93,7 +99,7 @@ class App {
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
-    workoutButton.addEventListener('click', this.editButton);
+    deleteAllButton.addEventListener('click', this.deleteAll.bind(this));
   }
 
   _getPosition() {
@@ -163,6 +169,7 @@ class App {
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
+
     let workout;
 
     // Check if data is valid
@@ -232,6 +239,7 @@ class App {
     let html = `
     <li class="workout workout--${workout.name}" data-id=${workout.id}>
     <h2 class="workout__title">${workout.description}</h2>
+    <h2 class="hidden workout__coords">${workout.coords}</h2>
     <div class="workout__details">
       <span class="workout__icon">${
         workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'
@@ -256,7 +264,7 @@ class App {
      <span class="workout__value">${workout.cadence}</span>
      <span class="workout__unit">spm</span>
    </div>
-   ${workoutButton}
+   <button class="edit__btn">EDIT</button>
  </li>
 `;
 
@@ -272,10 +280,14 @@ class App {
       <span class="workout__value">${workout.elevationGain}</span>
       <span class="workout__unit">m</span>
     </div>
-    ${workoutButton}
+    <button class="edit__btn">EDIT</button>
   </li> `;
 
     form.insertAdjacentHTML('afterend', html);
+
+    // Add event listener to button upon creation
+    const editButton = document.querySelector('.edit__btn');
+    editButton.addEventListener('click', this._editWorkout.bind(this));
   }
 
   _moveToPopup(e) {
@@ -294,9 +306,35 @@ class App {
         duration: 1,
       },
     });
+  }
 
-    // using public interface
-    // workout.click();
+  deleteAll() {
+    this.#workouts = [];
+    localStorage.removeItem('workouts');
+    location.reload();
+  }
+
+  _showEditor() {
+    editorForm.classList.remove('hidden');
+    inputDistance.focus();
+  }
+
+  // Showing editor within the editWorkout method since this is where I am capturing the info based on the btn click - need to confirm logic chain
+
+  _editWorkout(e) {
+    this._showEditor();
+
+    console.log(e);
+    // identify the workouts ID that we want to reference based on clicking the edit button
+    let workoutID = e.path[1].dataset.id;
+    console.log(workoutID);
+    console.log(this.#workouts);
+
+    // find the matching workout based on the ID
+    let matchingWorkout = this.#workouts.find(
+      workout => workout.id === workoutID
+    );
+    console.log(matchingWorkout);
   }
 
   _setLocalStorage() {
@@ -313,10 +351,6 @@ class App {
     this.#workouts.forEach(work => {
       this._renderWorkout(work);
     });
-  }
-
-  editButton(e) {
-    console.log(e);
   }
 
   reset() {

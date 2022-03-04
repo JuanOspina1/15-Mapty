@@ -76,6 +76,7 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const deleteAllButton = document.querySelector('.delete-all__btn');
 const editorForm = document.querySelector('.editor');
+const editorDistance = document.querySelector('.editor__input--distance');
 
 // Creating the edit button
 // const editButton = document.createElement('button');
@@ -87,6 +88,7 @@ class App {
   #mapZoomLevel = 13;
   #mapEvent;
   #workouts = [];
+  #editedWorkout;
 
   constructor() {
     // get users position
@@ -100,6 +102,7 @@ class App {
     inputType.addEventListener('change', this._toggleElevationField);
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     deleteAllButton.addEventListener('click', this.deleteAll.bind(this));
+    editorForm.addEventListener('submit', this._submitWorkout.bind(this));
   }
 
   _getPosition() {
@@ -308,33 +311,69 @@ class App {
     });
   }
 
+  // DELETING SECTION
   deleteAll() {
     this.#workouts = [];
     localStorage.removeItem('workouts');
     location.reload();
   }
 
+  // EDITING METHODS SECTION
+
   _showEditor() {
     editorForm.classList.remove('hidden');
-    inputDistance.focus();
+    editorDistance.focus();
   }
 
-  // Showing editor within the editWorkout method since this is where I am capturing the info based on the btn click - need to confirm logic chain
+  _hideEditor() {
+    editorDistance.value = '';
+    editorForm.style.display = 'none';
+    editorForm.classList.add('hidden');
+  }
 
   _editWorkout(e) {
     this._showEditor();
 
-    console.log(e);
     // identify the workouts ID that we want to reference based on clicking the edit button
     let workoutID = e.path[1].dataset.id;
-    console.log(workoutID);
-    console.log(this.#workouts);
+    // console.log(workoutID);
+    // console.log(this.#workouts);
 
     // find the matching workout based on the ID
     let matchingWorkout = this.#workouts.find(
       workout => workout.id === workoutID
     );
-    console.log(matchingWorkout);
+    // console.log(matchingWorkout);
+
+    this.#editedWorkout = matchingWorkout;
+    console.log(this.#editedWorkout);
+  }
+
+  _submitWorkout(e) {
+    e.preventDefault();
+
+    const editedDistance = +editorDistance.value;
+    // editedWorkout now has the updated distance
+    this.#editedWorkout.distance = editedDistance;
+
+    //hide editor after submitting
+    this._hideEditor();
+    // cl #editedWorkout with the new distance
+    console.log(this.#editedWorkout);
+
+    // adding the edited workout to the array
+    // this.#workouts.push(this.#editedWorkout);
+    // WHY DOES THIS ARRAY SHOW THE UPDATED WORKOUT WITHOUT EVER HAVING PUSHED IT?
+    console.log(this.#workouts);
+
+    // Need to add the updated #workouts to the local storage
+
+    // Need to update the list & markers
+    // This renders 3 workouts instead of the 2 in the array
+    // The original time this was called remains + the new iteration - need to find a way to update
+    this._renderWorkout(...this.#workouts);
+
+    this._renderWorkoutMarker(...this.#workouts);
   }
 
   _setLocalStorage() {

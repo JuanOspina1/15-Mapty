@@ -242,7 +242,6 @@ class App {
     let html = `
     <li class="workout workout--${workout.name}" data-id=${workout.id}>
     <h2 class="workout__title">${workout.description}</h2>
-    <h2 class="hidden workout__coords">${workout.coords}</h2>
     <div class="workout__details">
       <span class="workout__icon">${
         workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'
@@ -311,6 +310,9 @@ class App {
     });
   }
 
+  //////////////////////////////////////////////////////////////
+  //EXTRA ASSIGNMENTS
+
   // DELETING SECTION
   deleteAll() {
     this.#workouts = [];
@@ -325,6 +327,7 @@ class App {
     editorDistance.focus();
   }
 
+  // Need to figure out how to allow the edit form to appear after one use without reloading the page
   _hideEditor() {
     editorDistance.value = '';
     editorForm.style.display = 'none';
@@ -366,14 +369,18 @@ class App {
     // WHY DOES THIS ARRAY SHOW THE UPDATED WORKOUT WITHOUT EVER HAVING PUSHED IT?
     console.log(this.#workouts);
 
-    // Need to add the updated #workouts to the local storage
-
+    // add the updated #workouts to the local storage - the correct markers appear upon reload
+    this._setLocalStorage();
     // Need to update the list & markers
     // This renders 3 workouts instead of the 2 in the array
     // The original time this was called remains + the new iteration - need to find a way to update
     this._renderWorkout(...this.#workouts);
 
+    // Since the markers are based on LAT LNG,
     this._renderWorkoutMarker(...this.#workouts);
+
+    // I reload the page so the workouts will update. Not sure how to make that happen without reloading
+    location.reload();
   }
 
   _setLocalStorage() {

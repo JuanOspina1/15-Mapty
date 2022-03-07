@@ -78,6 +78,8 @@ const deleteAllButton = document.querySelector('.delete-all__btn');
 const editorForm = document.querySelector('.editor');
 const editorDistance = document.querySelector('.editor__input--distance');
 const editorDuration = document.querySelector('.editor__input--duration');
+const editorCadence = document.querySelector('.editor__input--cadence');
+const editorElevation = document.querySelector('.editor__input--elevation');
 
 // Creating the edit button
 // const editButton = document.createElement('button');
@@ -351,6 +353,24 @@ class App {
 
     this.#editedWorkout = matchingWorkout;
     console.log(this.#editedWorkout);
+
+    // Test using duration to toggle the field. Need to add the appropriate form fields for cadence and elevation HTML
+    // Need to take in the value within the IF statement or else the value will be taken as 0. This may not need to be done since the field will not appear based on the "type"
+    if (this.#editedWorkout.type === 'running') {
+      editorCadence
+        .closest('.editor__row')
+        .classList.remove('form__row--hidden');
+      editorElevation
+        .closest('.editor__row')
+        .classList.add('form__row--hidden');
+    }
+
+    if (this.#editedWorkout.type === 'cycling') {
+      editorCadence.closest('.editor__row').classList.add('form__row--hidden');
+      editorElevation
+        .closest('.editor__row')
+        .classList.remove('form__row--hidden');
+    }
   }
 
   _submitWorkout(e) {
@@ -358,9 +378,14 @@ class App {
 
     const editedDistance = +editorDistance.value;
     const editedDuration = +editorDuration.value;
+    const editedCadence = +editorCadence.value;
+    const editedElevation = +editorElevation.value;
     // editedWorkout now has the updated distance
     this.#editedWorkout.distance = editedDistance;
     this.#editedWorkout.duration = editedDuration;
+    this.#editedWorkout.cadence = editedCadence;
+    // Not sure if this one is working
+    this.#editedWorkout.elevationGain = editedElevation;
 
     //hide editor after submitting
     this._hideEditor();

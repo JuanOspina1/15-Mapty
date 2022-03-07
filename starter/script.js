@@ -77,6 +77,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const deleteAllButton = document.querySelector('.delete-all__btn');
 const editorForm = document.querySelector('.editor');
 const editorDistance = document.querySelector('.editor__input--distance');
+const editorDuration = document.querySelector('.editor__input--duration');
 
 // Creating the edit button
 // const editButton = document.createElement('button');
@@ -356,8 +357,10 @@ class App {
     e.preventDefault();
 
     const editedDistance = +editorDistance.value;
+    const editedDuration = +editorDuration.value;
     // editedWorkout now has the updated distance
     this.#editedWorkout.distance = editedDistance;
+    this.#editedWorkout.duration = editedDuration;
 
     //hide editor after submitting
     this._hideEditor();

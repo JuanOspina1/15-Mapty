@@ -271,6 +271,7 @@ class App {
      <span class="workout__unit">spm</span>
    </div>
    <button class="edit__btn">EDIT</button>
+   <button class="singledelete__btn">DELETE</button>
  </li>
 `;
 
@@ -287,6 +288,7 @@ class App {
       <span class="workout__unit">m</span>
     </div>
     <button class="edit__btn">EDIT</button>
+    <button class="singledelete__btn">DELETE</button>
   </li> `;
 
     form.insertAdjacentHTML('afterend', html);
@@ -294,6 +296,12 @@ class App {
     // Add event listener to button upon creation
     const editButton = document.querySelector('.edit__btn');
     editButton.addEventListener('click', this._editWorkout.bind(this));
+
+    const singleDeleteBtn = document.querySelector('.singledelete__btn');
+    singleDeleteBtn.addEventListener(
+      'click',
+      this._singleDeleteWorkout.bind(this)
+    );
   }
 
   _moveToPopup(e) {
@@ -321,6 +329,19 @@ class App {
   deleteAll() {
     this.#workouts = [];
     localStorage.removeItem('workouts');
+    location.reload();
+  }
+
+  _singleDeleteWorkout(e) {
+    // find the ID of the object where the "delete" button is clicked
+    let workoutID = e.path[1].dataset.id;
+
+    // Set the workouts array to the new array with the object filtered out
+    this.#workouts = this.#workouts.filter(workout => workout.id != workoutID);
+
+    this._setLocalStorage();
+
+    // This will throw a quick error before reloading due to the "moveToPopup" method trying to find the cords
     location.reload();
   }
 

@@ -80,6 +80,7 @@ const editorDistance = document.querySelector('.editor__input--distance');
 const editorDuration = document.querySelector('.editor__input--duration');
 const editorCadence = document.querySelector('.editor__input--cadence');
 const editorElevation = document.querySelector('.editor__input--elevation');
+const sortType = document.querySelector('.sort__input--type');
 
 // Creating the edit button
 // const editButton = document.createElement('button');
@@ -106,6 +107,7 @@ class App {
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
     deleteAllButton.addEventListener('click', this.deleteAll.bind(this));
     editorForm.addEventListener('submit', this._submitWorkout.bind(this));
+    sortType.addEventListener('change', this._sortWorkouts.bind(this));
   }
 
   _getPosition() {
@@ -343,6 +345,25 @@ class App {
 
     // This will throw a quick error before reloading due to the "moveToPopup" method trying to find the cords
     location.reload();
+  }
+
+  // SORTING - Not working
+  _sortWorkouts() {
+    if (sortType.value === 'distance') {
+      this.#workouts.sort(function (a, b) {
+        return a.distance - b.distance;
+      });
+      this._setLocalStorage();
+      location.reload();
+    }
+
+    if (sortType.value === 'duration') {
+      this.#workouts.sort(function (a, b) {
+        return a.duration - b.duration;
+      });
+      this._setLocalStorage();
+      location.reload();
+    }
   }
 
   // EDITING METHODS SECTION

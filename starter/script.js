@@ -194,6 +194,7 @@ class App {
         return alert('Inputs have to be positive numbers!');
 
       workout = new Running([lat, lng], distance, duration, cadence);
+      console.log([lat, lng]);
     }
 
     // If workout cycling, create cycling object
@@ -381,33 +382,52 @@ class App {
     const editedCadence = +editorCadence.value;
     const editedElevation = +editorElevation.value;
     // editedWorkout now has the updated distance
-    this.#editedWorkout.distance = editedDistance;
-    this.#editedWorkout.duration = editedDuration;
-    this.#editedWorkout.cadence = editedCadence;
-    // Not sure if this one is working
-    this.#editedWorkout.elevationGain = editedElevation;
+    console.log(editedDistance, editedDuration, editedCadence, editedElevation);
+
+    // check if the inputs are valid
+    const validInputs = (...inputs) =>
+      inputs.every(inp => Number.isFinite(inp));
+
+    const allPositive = (...inputs) => inputs.every(inp => inp >= 0);
+
+    if (
+      !validInputs(
+        editedDistance,
+        editedDuration,
+        editedElevation,
+        editedCadence
+      ) ||
+      !allPositive(editedDistance, editedDuration)
+    ) {
+      return alert('Inputs have to be positive numbers!');
+    } else {
+      this.#editedWorkout.distance = editedDistance;
+      this.#editedWorkout.duration = editedDuration;
+      this.#editedWorkout.cadence = editedCadence;
+      this.#editedWorkout.elevationGain = editedElevation;
+    }
+
+    //////////////////
+    // changing the fields that are calculated upon created the object
+    if (this.#editedWorkout.type === 'running') {
+      this.#editedWorkout.pace =
+        this.#editedWorkout.duration / this.#editedWorkout.distance;
+    }
+
+    if (this.#editedWorkout.type === 'cycling') {
+      this.#editedWorkout.speed =
+        this.#editedWorkout.distance / (this.#editedWorkout.duration / 60);
+    }
 
     //hide editor after submitting
     this._hideEditor();
-    // cl #editedWorkout with the new distance
-    console.log(this.#editedWorkout);
 
-    // adding the edited workout to the array
-    // this.#workouts.push(this.#editedWorkout);
-    // WHY DOES THIS ARRAY SHOW THE UPDATED WORKOUT WITHOUT EVER HAVING PUSHED IT?
-    console.log(this.#workouts);
+    // I NEVER PUSH THE UPDATED OBJECT TO THE ARRAY BUT IT GETS UPDATED - NEED TO UNDERSTAND WHY
 
-    // add the updated #workouts to the local storage - the correct markers appear upon reload
+    // add the updated #workouts to the local storage - the correct markers & workouts appear upon reload
     this._setLocalStorage();
-    // Need to update the list & markers
-    // This renders 3 workouts instead of the 2 in the array
-    // The original time this was called remains + the new iteration - need to find a way to update
-    this._renderWorkout(...this.#workouts);
 
-    // Since the markers are based on LAT LNG,
-    this._renderWorkoutMarker(...this.#workouts);
-
-    // I reload the page so the workouts will update. Not sure how to make that happen without reloading
+    // reload the page to create the workouts based on local storage
     location.reload();
   }
 

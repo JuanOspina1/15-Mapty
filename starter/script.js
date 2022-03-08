@@ -347,7 +347,7 @@ class App {
     location.reload();
   }
 
-  // SORTING - Not working
+  // SORTING based on duration and distance
   _sortWorkouts() {
     if (sortType.value === 'distance') {
       this.#workouts.sort(function (a, b) {
